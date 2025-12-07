@@ -20,6 +20,8 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private string crashText = "KAZA!";
     [SerializeField] private string fuelEmptyText = "BENZİN BİTTİ!";
     [SerializeField] private float showDelay = 1f;
+    [SerializeField] private float autoReturnToMenuDelay = 5f; // Otomatik ana menüye dönme süresi (saniye)
+    [SerializeField] private bool autoReturnToMenu = true; // Otomatik dönüş açık/kapalı
 
     private bool isGameOver = false;
 
@@ -141,10 +143,22 @@ public class GameOverUI : MonoBehaviour
         {
             fuelBarContainer.SetActive(true);
         }
+
+        // Otomatik olarak ana menüye dön
+        if (autoReturnToMenu)
+        {
+            Invoke(nameof(GoToMainMenu), autoReturnToMenuDelay);
+        }
     }
 
     private void RestartGame()
     {
+        // Otomatik ana menüye dönme işlemini iptal et
+        CancelInvoke(nameof(GoToMainMenu));
+        
+        // Game over durumunu sıfırla
+        isGameOver = false;
+        
         if (GameManager.Instance != null)
         {
             GameManager.Instance.RestartLevel();

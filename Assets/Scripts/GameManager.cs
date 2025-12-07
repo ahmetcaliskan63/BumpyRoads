@@ -26,7 +26,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        if (isGameOver) return;
+        // Game over olsa bile restart yapılabilir
+        isGameOver = false; // Restart yaparken game over durumunu sıfırla
         
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.buildIndex);
@@ -34,8 +35,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadMainMenu()
     {
-        if (isGameOver) return;
-        
+        // Game over olsa bile ana menüye dönebilir
         if (!string.IsNullOrEmpty(mainMenuSceneName))
         {
             SceneManager.LoadScene(mainMenuSceneName);

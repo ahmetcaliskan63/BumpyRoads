@@ -94,7 +94,9 @@ public class CrashSystem : MonoBehaviour
 
     private void CheckForCrash()
     {
-        if (headTouchingGround && bodyTouchingGround && !hasCrashed)
+        // Kafa VEYA gövde zemine değdiğinde çarpışma tetiklenir
+        // (Her ikisi de değmesi gerekmez, biri yeterli)
+        if ((headTouchingGround || bodyTouchingGround) && !hasCrashed)
         {
             TriggerCrash();
         }
@@ -123,33 +125,58 @@ public class CrashSystem : MonoBehaviour
             Vector3 headPosition = driverHead.transform.position;
             Quaternion headRotation = driverHead.transform.rotation;
             
-            Joint2D[] joints = driverHead.GetComponents<Joint2D>();
-            foreach (Joint2D joint in joints)
+            // Kafa üzerindeki tüm joint'leri kaldır
+            Joint2D[] headJoints = driverHead.GetComponents<Joint2D>();
+            foreach (Joint2D joint in headJoints)
             {
-                Destroy(joint);
+                DestroyImmediate(joint);
             }
             
+            // Araba üzerindeki joint'leri de kontrol et (kafaya bağlı olanlar)
+            if (carRb != null)
+            {
+                Joint2D[] carJoints = carRb.GetComponents<Joint2D>();
+                foreach (Joint2D joint in carJoints)
+                {
+                    if (joint.connectedBody != null && joint.connectedBody.gameObject == driverHead)
+                    {
+                        DestroyImmediate(joint);
+                    }
+                }
+            }
+            
+            // Parent'ı kaldır
             driverHead.transform.SetParent(null);
             driverHead.transform.position = headPosition;
             driverHead.transform.rotation = headRotation;
             
+            // Collider'ı trigger'dan çıkar
             Collider2D headCollider = driverHead.GetComponent<Collider2D>();
             if (headCollider != null)
             {
                 headCollider.isTrigger = false;
             }
             
+            // Mevcut Rigidbody2D'yi kontrol et ve ayarla
             Rigidbody2D existingRb = driverHead.GetComponent<Rigidbody2D>();
             if (existingRb != null)
             {
-                Destroy(existingRb);
+                existingRb.isKinematic = false;
+                existingRb.gravityScale = 1f;
+                existingRb.linearDamping = 2f;
+                existingRb.angularDamping = 5f;
+                headRb = existingRb;
+            }
+            else
+            {
+                headRb = driverHead.AddComponent<Rigidbody2D>();
+                headRb.isKinematic = false;
+                headRb.gravityScale = 1f;
+                headRb.linearDamping = 2f;
+                headRb.angularDamping = 5f;
             }
             
-            headRb = driverHead.AddComponent<Rigidbody2D>();
-            headRb.isKinematic = false;
-            headRb.gravityScale = 1f;
-            headRb.linearDamping = 2f;
-            headRb.angularDamping = 5f;
+            // Kuvvet uygula
             Vector2 headForce = new Vector2(
                 Random.Range(-separationForce, separationForce),
                 Random.Range(2f, 5f)
@@ -163,33 +190,58 @@ public class CrashSystem : MonoBehaviour
             Vector3 bodyPosition = driverBody.transform.position;
             Quaternion bodyRotation = driverBody.transform.rotation;
             
-            Joint2D[] joints = driverBody.GetComponents<Joint2D>();
-            foreach (Joint2D joint in joints)
+            // Gövde üzerindeki tüm joint'leri kaldır
+            Joint2D[] bodyJoints = driverBody.GetComponents<Joint2D>();
+            foreach (Joint2D joint in bodyJoints)
             {
-                Destroy(joint);
+                DestroyImmediate(joint);
             }
             
+            // Araba üzerindeki joint'leri de kontrol et (gövdeye bağlı olanlar)
+            if (carRb != null)
+            {
+                Joint2D[] carJoints = carRb.GetComponents<Joint2D>();
+                foreach (Joint2D joint in carJoints)
+                {
+                    if (joint.connectedBody != null && joint.connectedBody.gameObject == driverBody)
+                    {
+                        DestroyImmediate(joint);
+                    }
+                }
+            }
+            
+            // Parent'ı kaldır
             driverBody.transform.SetParent(null);
             driverBody.transform.position = bodyPosition;
             driverBody.transform.rotation = bodyRotation;
             
+            // Collider'ı trigger'dan çıkar
             Collider2D bodyCollider = driverBody.GetComponent<Collider2D>();
             if (bodyCollider != null)
             {
                 bodyCollider.isTrigger = false;
             }
             
+            // Mevcut Rigidbody2D'yi kontrol et ve ayarla
             Rigidbody2D existingRb = driverBody.GetComponent<Rigidbody2D>();
             if (existingRb != null)
             {
-                Destroy(existingRb);
+                existingRb.isKinematic = false;
+                existingRb.gravityScale = 1f;
+                existingRb.linearDamping = 2f;
+                existingRb.angularDamping = 5f;
+                bodyRb = existingRb;
+            }
+            else
+            {
+                bodyRb = driverBody.AddComponent<Rigidbody2D>();
+                bodyRb.isKinematic = false;
+                bodyRb.gravityScale = 1f;
+                bodyRb.linearDamping = 2f;
+                bodyRb.angularDamping = 5f;
             }
             
-            bodyRb = driverBody.AddComponent<Rigidbody2D>();
-            bodyRb.isKinematic = false;
-            bodyRb.gravityScale = 1f;
-            bodyRb.linearDamping = 2f;
-            bodyRb.angularDamping = 5f;
+            // Kuvvet uygula
             Vector2 bodyForce = new Vector2(
                 Random.Range(-separationForce, separationForce),
                 Random.Range(2f, 5f)
