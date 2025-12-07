@@ -10,9 +10,11 @@ public class CrashSystem : MonoBehaviour
 
     [Header("Çarpışma Ayarları")]
     [SerializeField] private float separationForce = 5f;
-    [SerializeField] private float minCrashSpeed = 3f;
+    [SerializeField] private float minCrashSpeed = 2f;
 
     private bool hasCrashed = false;
+    private bool headTouchingGround = false;
+    private bool bodyTouchingGround = false;
     private Rigidbody2D headRb;
     private Rigidbody2D bodyRb;
 
@@ -45,7 +47,7 @@ public class CrashSystem : MonoBehaviour
             {
                 detector = driverHead.AddComponent<HeadCollisionDetector>();
             }
-            detector.Initialize(this);
+            detector.Initialize(this, carRb);
         }
     }
 
@@ -69,7 +71,7 @@ public class CrashSystem : MonoBehaviour
             {
                 detector = driverBody.AddComponent<BodyCollisionDetector>();
             }
-            detector.Initialize(this);
+            detector.Initialize(this, carRb);
         }
     }
 
@@ -78,10 +80,24 @@ public class CrashSystem : MonoBehaviour
         return obj.CompareTag("Ground") || obj.name.Contains("Ground");
     }
 
-    public bool CheckCrashSpeed()
+    public void SetHeadTouchingGround(bool touching)
     {
-        if (carRb == null) return true;
-        return carRb.linearVelocity.magnitude >= minCrashSpeed;
+        headTouchingGround = touching;
+        CheckForCrash();
+    }
+
+    public void SetBodyTouchingGround(bool touching)
+    {
+        bodyTouchingGround = touching;
+        CheckForCrash();
+    }
+
+    private void CheckForCrash()
+    {
+        if (headTouchingGround && bodyTouchingGround && !hasCrashed)
+        {
+            TriggerCrash();
+        }
     }
 
     public void TriggerCrash()

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class FuelManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class FuelManager : MonoBehaviour
 
     private float currentFuel;
     private bool isConsumingFuel = true;
+    private CarController carController;
 
     public float CurrentFuel => currentFuel;
     public float MaxFuel => maxFuel;
@@ -38,14 +40,62 @@ public class FuelManager : MonoBehaviour
     {
         currentFuel = maxFuel;
         OnFuelChanged?.Invoke(currentFuel);
+        
+        if (carController == null)
+        {
+            carController = FindObjectOfType<CarController>();
+        }
     }
 
     private void Update()
     {
-        if (isConsumingFuel && currentFuel > 0f)
+        if (!isConsumingFuel || currentFuel <= 0f) return;
+
+        bool isAccelerating = IsCarAccelerating();
+        
+        if (isAccelerating)
         {
             ConsumeFuel(constantConsumptionRate * Time.deltaTime);
         }
+    }
+
+    private bool IsCarAccelerating()
+    {
+        if (carController == null)
+        {
+            carController = FindObjectOfType<CarController>();
+        }
+
+        if (carController == null) return false;
+
+        Keyboard keyboard = Keyboard.current;
+        Gamepad gamepad = Gamepad.current;
+
+        if (keyboard != null)
+        {
+            if (keyboard.aKey.isPressed || keyboard.dKey.isPressed || 
+                keyboard.leftArrowKey.isPressed || keyboard.rightArrowKey.isPressed)
+            {
+                return true;
+            }
+        }
+
+        if (gamepad != null)
+        {
+            float stickInput = gamepad.leftStick.ReadValue().x;
+            if (Mathf.Abs(stickInput) > 0.1f)
+            {
+                return true;
+            }
+        }
+
+        float input = Input.GetAxisRaw("Horizontal");
+        if (Mathf.Abs(input) > 0.1f)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public void ConsumeFuel(float amount)

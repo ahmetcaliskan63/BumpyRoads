@@ -9,6 +9,9 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Button restartButton;
     [SerializeField] private Button mainMenuButton;
     [SerializeField] private TextMeshProUGUI gameOverText;
+    [SerializeField] private TextMeshProUGUI coinsText;
+    [SerializeField] private TextMeshProUGUI distanceText;
+    [SerializeField] private GameObject fuelBarContainer;
 
     [Header("Sistem Referansları")]
     [SerializeField] private CrashSystem crashSystem;
@@ -109,6 +112,18 @@ public class GameOverUI : MonoBehaviour
             gameOverText.text = text;
         }
 
+        if (coinsText != null)
+        {
+            int coins = CoinManager.Instance != null ? CoinManager.Instance.CurrentCoins : 0;
+            coinsText.text = "Altın: " + coins.ToString();
+        }
+
+        if (distanceText != null)
+        {
+            float distance = DistanceManager.Instance != null ? DistanceManager.Instance.CurrentDistance : 0f;
+            distanceText.text = "Mesafe: " + distance.ToString("F1") + " m";
+        }
+
         if (gameOverPanel != null)
         {
             Invoke(nameof(ActivatePanel), showDelay);
@@ -120,6 +135,11 @@ public class GameOverUI : MonoBehaviour
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
+        }
+
+        if (fuelBarContainer != null)
+        {
+            fuelBarContainer.SetActive(true);
         }
     }
 
