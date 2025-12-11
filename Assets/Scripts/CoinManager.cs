@@ -8,6 +8,8 @@ public class CoinManager : MonoBehaviour
     [SerializeField] private int currentCoins = 0;
     [SerializeField] private int coinsPerCollectible = 5;
 
+    private const string CoinsPrefKey = "TotalCoins";
+
     public int CurrentCoins => currentCoins;
 
     public System.Action<int> OnCoinsChanged;
@@ -17,6 +19,8 @@ public class CoinManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+            LoadCoinsFromPrefs();
         }
         else
         {
@@ -27,13 +31,13 @@ public class CoinManager : MonoBehaviour
 
     private void Start()
     {
-        currentCoins = 0;
         OnCoinsChanged?.Invoke(currentCoins);
     }
 
     public void AddCoins(int amount)
     {
         currentCoins += amount;
+        SaveCoinsToPrefs();
         OnCoinsChanged?.Invoke(currentCoins);
     }
 
@@ -47,6 +51,7 @@ public class CoinManager : MonoBehaviour
         if (currentCoins >= amount)
         {
             currentCoins -= amount;
+            SaveCoinsToPrefs();
             OnCoinsChanged?.Invoke(currentCoins);
             return true;
         }
@@ -56,7 +61,19 @@ public class CoinManager : MonoBehaviour
     public void ResetCoins()
     {
         currentCoins = 0;
+        SaveCoinsToPrefs();
         OnCoinsChanged?.Invoke(currentCoins);
+    }
+
+    private void LoadCoinsFromPrefs()
+    {
+        currentCoins = PlayerPrefs.GetInt(CoinsPrefKey, 0);
+    }
+
+    private void SaveCoinsToPrefs()
+    {
+        PlayerPrefs.SetInt(CoinsPrefKey, currentCoins);
+        PlayerPrefs.Save();
     }
 }
 
