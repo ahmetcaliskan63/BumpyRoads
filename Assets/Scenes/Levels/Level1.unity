@@ -336,7 +336,7 @@ Transform:
   m_GameObject: {fileID: 143992787}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.228512, y: 3.04, z: -10}
+  m_LocalPosition: {x: -10.87646, y: 3.04, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1352,7 +1352,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.228512, y: 3.04, z: -10}
+  m_LocalPosition: {x: -10.87646, y: 3.04, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2870,52 +2870,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1312391358841416837, guid: 205ea1b86e4f4bb46949955184f799b0, type: 3}
   m_PrefabInstance: {fileID: 1820721659}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &895808683
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 895808685}
-  - component: {fileID: 895808684}
-  m_Layer: 0
-  m_Name: CoinManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &895808684
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 895808683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fea2da1ebc49d0545ad9467adae3db5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CoinManager
-  currentCoins: 0
-  coinsPerCollectible: 5
---- !u!4 &895808685
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 895808683}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.33674, y: 6.13879, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &896899725 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1312391358841416837, guid: 205ea1b86e4f4bb46949955184f799b0, type: 3}
@@ -8549,6 +8503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CoinUI
   coinText: {fileID: 2065815079}
   coinIcon: {fileID: 68462907}
+  showTotalCoins: 0
 --- !u!114 &1923836332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8581,11 +8536,15 @@ MonoBehaviour:
   restartButton: {fileID: 497229335}
   mainMenuButton: {fileID: 1170681860}
   gameOverText: {fileID: 1747816645}
+  coinsText: {fileID: 0}
+  distanceText: {fileID: 0}
   fuelBarContainer: {fileID: 370158837}
   crashSystem: {fileID: 880043779}
   crashText: KAZA!
   fuelEmptyText: "BENZ\u0130N B\u0130TT\u0130!"
   showDelay: 1
+  autoReturnToMenuDelay: 5
+  autoReturnToMenu: 1
 --- !u!4 &1924839882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1312391358841416837, guid: 205ea1b86e4f4bb46949955184f799b0, type: 3}
@@ -8806,6 +8765,7 @@ GameObject:
   - component: {fileID: 2065815081}
   - component: {fileID: 2065815080}
   - component: {fileID: 2065815079}
+  - component: {fileID: 2065815082}
   m_Layer: 5
   m_Name: CoinText
   m_TagString: Untagged
@@ -8932,6 +8892,21 @@ RectTransform:
   m_AnchoredPosition: {x: 80, y: -25}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &2065815082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065815078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45477b618df3a2f4db9eaa87a9e8dc40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoinUI
+  coinText: {fileID: 2065815079}
+  coinIcon: {fileID: 68462907}
+  showTotalCoins: 0
 --- !u!1001 &2065954482
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9123,7 +9098,6 @@ SceneRoots:
   - {fileID: 1923836330}
   - {fileID: 937968250}
   - {fileID: 1165782183}
-  - {fileID: 895808685}
   - {fileID: 185259116}
   - {fileID: 1329608052}
   - {fileID: 345575881}

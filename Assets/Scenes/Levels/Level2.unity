@@ -336,7 +336,7 @@ Transform:
   m_GameObject: {fileID: 143992787}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.228512, y: 3.04, z: -10}
+  m_LocalPosition: {x: -10.87646, y: 3.04, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1352,7 +1352,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.228512, y: 3.04, z: -10}
+  m_LocalPosition: {x: -10.87646, y: 3.04, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6424,54 +6424,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7426387801524010397, guid: 07506ccdba2f41c4197a902f2b24c65e, type: 3}
   m_PrefabInstance: {fileID: 552199005}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1165782181
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1165782183}
-  - component: {fileID: 1165782182}
-  m_Layer: 0
-  m_Name: FuelManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1165782182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1165782181}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73ac1a324e481534cac47a930f0c1402, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FuelManager
-  maxFuel: 100
-  fuelConsumptionRate: 5
-  fuelPerCollectible: 25
-  constantConsumptionRate: 5
---- !u!4 &1165782183
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1165782181}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.80228, y: 2.26492, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1170681856
 GameObject:
   m_ObjectHideFlags: 0
@@ -8549,6 +8501,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CoinUI
   coinText: {fileID: 2065815079}
   coinIcon: {fileID: 68462907}
+  showTotalCoins: 0
 --- !u!114 &1923836332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8581,11 +8534,15 @@ MonoBehaviour:
   restartButton: {fileID: 497229335}
   mainMenuButton: {fileID: 1170681860}
   gameOverText: {fileID: 1747816645}
+  coinsText: {fileID: 0}
+  distanceText: {fileID: 0}
   fuelBarContainer: {fileID: 370158837}
   crashSystem: {fileID: 880043779}
   crashText: KAZA!
   fuelEmptyText: "BENZ\u0130N B\u0130TT\u0130!"
   showDelay: 1
+  autoReturnToMenuDelay: 5
+  autoReturnToMenu: 1
 --- !u!4 &1924839882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1312391358841416837, guid: 205ea1b86e4f4bb46949955184f799b0, type: 3}
@@ -9122,7 +9079,6 @@ SceneRoots:
   - {fileID: 1027298292}
   - {fileID: 1923836330}
   - {fileID: 937968250}
-  - {fileID: 1165782183}
   - {fileID: 895808685}
   - {fileID: 185259116}
   - {fileID: 1329608052}

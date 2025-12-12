@@ -1,18 +1,22 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CoinManager : MonoBehaviour
 {
     public static CoinManager Instance { get; private set; }
 
     [Header("Altın Ayarları")]
-    [SerializeField] private int currentCoins = 0;
+    [SerializeField] private int currentCoins = 0; // Anlık (run içi) altın
+    [SerializeField] private int totalCoins = 0;   // Kalıcı kasa altını
     [SerializeField] private int coinsPerCollectible = 5;
 
     private const string CoinsPrefKey = "TotalCoins";
 
-    public int CurrentCoins => currentCoins;
+    public int CurrentCoins => currentCoins; // run içi
+    public int TotalCoins => totalCoins;     // kasa
 
-    public System.Action<int> OnCoinsChanged;
+    public System.Action<int> OnCoinsChanged;        // run içi güncelleme
+    public System.Action<int> OnTotalCoinsChanged;   // kasa güncelleme
 
     private void Awake()
     {
@@ -20,7 +24,9 @@ public class CoinManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            LoadCoinsFromPrefs();
+            LoadCoinsFromPrefs(); // totalCoins yüklenir
+            currentCoins = 0;     // run başlarken sıfır
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -31,28 +37,39 @@ public class CoinManager : MonoBehaviour
 
     private void Start()
     {
+        // Başlangıçta her iki değeri de yayınla
+        OnCoinsChanged?.Invoke(currentCoins);
+        OnTotalCoinsChanged?.Invoke(totalCoins);
+    }
+
+    // Run içi altın ekle (UI için)
+    private void AddRunCoins(int amount)
+    {
+        currentCoins += amount;
         OnCoinsChanged?.Invoke(currentCoins);
     }
 
-    public void AddCoins(int amount)
+    // Kasa altın ekle/çıkar (kalıcı)
+    private void AddTotalCoins(int amount)
     {
-        currentCoins += amount;
+        totalCoins += amount;
         SaveCoinsToPrefs();
-        OnCoinsChanged?.Invoke(currentCoins);
+        OnTotalCoinsChanged?.Invoke(totalCoins);
     }
 
     public void CollectCoin()
     {
-        AddCoins(coinsPerCollectible);
+        AddRunCoins(coinsPerCollectible);
+        AddTotalCoins(coinsPerCollectible);
     }
 
     public bool SpendCoins(int amount)
     {
-        if (currentCoins >= amount)
+        if (totalCoins >= amount)
         {
-            currentCoins -= amount;
+            totalCoins -= amount;
             SaveCoinsToPrefs();
-            OnCoinsChanged?.Invoke(currentCoins);
+            OnTotalCoinsChanged?.Invoke(totalCoins);
             return true;
         }
         return false;
@@ -60,19 +77,48 @@ public class CoinManager : MonoBehaviour
 
     public void ResetCoins()
     {
-        currentCoins = 0;
-        SaveCoinsToPrefs();
+        currentCoins = 0; // run içi
         OnCoinsChanged?.Invoke(currentCoins);
+
+        totalCoins = 0;   // kasa
+        SaveCoinsToPrefs();
+        OnTotalCoinsChanged?.Invoke(totalCoins);
+    }
+
+    public void ResetRunCoins()
+    {
+        currentCoins = 0;
+        OnCoinsChanged?.Invoke(currentCoins);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Oyun sahnelerine girerken run içi altını sıfırla (MainMenu hariç)
+        if (!scene.name.Equals("MainMenu"))
+        {
+            ResetRunCoins();
+        }
+
+        // Sahne değişiminde kasayı UI'lara yeniden bildir (MainMenu dahil)
+        OnTotalCoinsChanged?.Invoke(totalCoins);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
     }
 
     private void LoadCoinsFromPrefs()
     {
-        currentCoins = PlayerPrefs.GetInt(CoinsPrefKey, 0);
+        totalCoins = PlayerPrefs.GetInt(CoinsPrefKey, 0);
     }
 
     private void SaveCoinsToPrefs()
     {
-        PlayerPrefs.SetInt(CoinsPrefKey, currentCoins);
+        PlayerPrefs.SetInt(CoinsPrefKey, totalCoins);
         PlayerPrefs.Save();
     }
 }

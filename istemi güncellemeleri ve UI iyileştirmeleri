@@ -1,0 +1,25 @@
+warning: in the working copy of 'Assets/Scenes/Levels/Level1.unity', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scenes/Levels/Level2.unity', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scenes/Levels/Level2.unity.meta', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scenes/Levels/Level3.unity', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scenes/Levels/Level3.unity.meta', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scenes/Levels/MainMenu.unity', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scripts/CoinCollectible.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scripts/CoinManager.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scripts/CoinManager.cs.meta', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scripts/CoinUI.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scripts/GameOverUI.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/Scripts/MainMenuUI.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset', LF will be replaced by CRLF the next time Git touches it
+ Assets/Scenes/Levels/Level1.unity                  |  72 [32m+[m[31m-[m
+ Assets/Scenes/Levels/Level2.unity                  |  58 [32m+[m[31m-[m
+ Assets/Scenes/Levels/Level2.unity.meta             |   2 [32m+[m[31m-[m
+ Assets/Scenes/Levels/Level3.unity                  |  25 [32m+[m[31m-[m
+ Assets/Scenes/Levels/Level3.unity.meta             |   2 [32m+[m[31m-[m
+ Assets/Scenes/Levels/MainMenu.unity                | 974 [32m+++++[m[31m----------------[m
+ Assets/Scripts/CoinManager.cs                      |  72 [32m+[m[31m-[m
+ Assets/Scripts/CoinManager.cs.meta                 |   2 [32m+[m[31m-[m
+ Assets/Scripts/CoinUI.cs                           |  82 [32m+[m[31m-[m
+ Assets/Scripts/MainMenuUI.cs                       |  48 [32m+[m[31m-[m
+ .../LiberationSans SDF - Fallback.asset            |  53 [32m+[m[31m-[m
+ 11 files changed, 465 insertions(+), 925 deletions(-)
