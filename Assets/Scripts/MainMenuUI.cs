@@ -56,11 +56,95 @@ public class MainMenuUI : MonoBehaviour
     private void Start()
     {
         // LevelManager'ı bul veya oluştur
-        levelManager = FindObjectOfType<LevelManager>();
+        levelManager = LevelManager.Instance != null ? LevelManager.Instance : FindObjectOfType<LevelManager>();
         if (levelManager == null)
         {
             GameObject levelManagerObj = new GameObject("LevelManager");
             levelManager = levelManagerObj.AddComponent<LevelManager>();
+        }
+
+        Debug.Log($"MainMenuUI Start - levelManager bulundu: {levelManager != null}");
+
+        // Eğer referanslar atanmamışsa, otomatik bul
+        if (level2LockIconkilit == null && levelSelectPanel != null)
+        {
+            // LevelSelectPanel altında Level2Locklconkilit veya Level2LockIconkilit ara
+            level2LockIconkilit = FindChildInPanel("Level2Locklconkilit") ?? 
+                                  FindChildInPanel("Level2LockIconkilit");
+            
+            // Eğer hala bulunamadıysa, tüm child'ları kontrol et
+            if (level2LockIconkilit == null)
+            {
+                for (int i = 0; i < levelSelectPanel.transform.childCount; i++)
+                {
+                    Transform t = levelSelectPanel.transform.GetChild(i);
+                    if (t.name.Contains("Level2") && t.name.Contains("Lock") && t.name.Contains("kilit"))
+                    {
+                        level2LockIconkilit = t.gameObject;
+                        Debug.Log($"Level 2 Lock Icon bulundu (isim farklı): {t.name}");
+                        break;
+                    }
+                }
+            }
+            
+            if (level2LockIconkilit != null)
+            {
+                Debug.Log($"Level 2 Lock Icon otomatik bulundu: {level2LockIconkilit.name}");
+            }
+            else
+            {
+                Debug.LogError("Level 2 Lock Icon bulunamadı! LevelSelectPanel altında 'Level2Locklconkilit' veya 'Level2LockIconkilit' isimli GameObject olmalı!");
+            }
+        }
+
+        if (level3LockIconkilit == null && levelSelectPanel != null)
+        {
+            // LevelSelectPanel altında Level3Lockiconkilit veya Level3LockIconkilit ara
+            level3LockIconkilit = FindChildInPanel("Level3Lockiconkilit") ?? 
+                                  FindChildInPanel("Level3LockIconkilit");
+            
+            // Eğer hala bulunamadıysa, tüm child'ları kontrol et
+            if (level3LockIconkilit == null)
+            {
+                for (int i = 0; i < levelSelectPanel.transform.childCount; i++)
+                {
+                    Transform t = levelSelectPanel.transform.GetChild(i);
+                    if (t.name.Contains("Level3") && t.name.Contains("Lock") && t.name.Contains("kilit"))
+                    {
+                        level3LockIconkilit = t.gameObject;
+                        Debug.Log($"Level 3 Lock Icon bulundu (isim farklı): {t.name}");
+                        break;
+                    }
+                }
+            }
+            
+            if (level3LockIconkilit != null)
+            {
+                Debug.Log($"Level 3 Lock Icon otomatik bulundu: {level3LockIconkilit.name}");
+            }
+            else
+            {
+                Debug.LogError("Level 3 Lock Icon bulunamadı! LevelSelectPanel altında 'Level3Lockiconkilit' veya 'Level3LockIconkilit' isimli GameObject olmalı!");
+            }
+        }
+
+        // Referans kontrolü (final)
+        if (level2LockIconkilit == null)
+        {
+            Debug.LogError("MainMenuUI Start: level2LockIconkilit referansı HALA NULL! LevelSelectPanel altında GameObject bulunamadı!");
+        }
+        else
+        {
+            Debug.Log($"MainMenuUI Start: level2LockIconkilit bulundu - İsim: {level2LockIconkilit.name}, Aktif: {level2LockIconkilit.activeSelf}");
+        }
+
+        if (level3LockIconkilit == null)
+        {
+            Debug.LogError("MainMenuUI Start: level3LockIconkilit referansı HALA NULL! LevelSelectPanel altında GameObject bulunamadı!");
+        }
+        else
+        {
+            Debug.Log($"MainMenuUI Start: level3LockIconkilit bulundu - İsim: {level3LockIconkilit.name}, Aktif: {level3LockIconkilit.activeSelf}");
         }
 
         // Panelleri başlangıç durumuna getir
@@ -74,6 +158,21 @@ public class MainMenuUI : MonoBehaviour
 
         // Level durumlarını güncelle
         UpdateLevelButtons();
+    }
+
+    // LevelSelectPanel altında child GameObject bul
+    private GameObject FindChildInPanel(string childName)
+    {
+        if (levelSelectPanel == null) return null;
+
+        // Direkt child olarak ara
+        Transform child = levelSelectPanel.transform.Find(childName);
+        if (child != null)
+        {
+            return child.gameObject;
+        }
+
+        return null;
     }
 
     private void SetupButtons()
@@ -277,7 +376,13 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnPurchaseBuyClicked()
     {
-        if (pendingPurchaseLevel < 0) return;
+        if (pendingPurchaseLevel < 0)
+        {
+            Debug.LogWarning("OnPurchaseBuyClicked: pendingPurchaseLevel geçersiz!");
+            return;
+        }
+
+        Debug.Log($"OnPurchaseBuyClicked çağrıldı - Level: {pendingPurchaseLevel}");
 
         int price = GetLevelPrice(pendingPurchaseLevel);
         if (price <= 0)
@@ -304,9 +409,19 @@ public class MainMenuUI : MonoBehaviour
         // Satın alma başarılı, level kilidini aç
         if (levelManager != null)
         {
+            Debug.Log($"Level {pendingPurchaseLevel} açılıyor...");
             levelManager.UnlockLevel(pendingPurchaseLevel);
+            
+            // Kontrol et
+            bool isUnlocked = levelManager.IsLevelUnlocked(pendingPurchaseLevel);
+            Debug.Log($"Level {pendingPurchaseLevel} açıldı mı? {isUnlocked}");
+        }
+        else
+        {
+            Debug.LogError("levelManager NULL! Level açılamıyor!");
         }
 
+        Debug.Log("UpdateLevelButtons çağrılıyor...");
         UpdateLevelButtons();
         ClosePurchasePanel();
     }
@@ -333,12 +448,18 @@ public class MainMenuUI : MonoBehaviour
 
     private void UpdateLevelButtons()
     {
-        if (levelManager == null) return;
+        if (levelManager == null)
+        {
+            Debug.LogWarning("UpdateLevelButtons: levelManager null!");
+            return;
+        }
 
         // Level 1 her zaman açık
         bool level1Unlocked = true;
         bool level2Unlocked = levelManager.IsLevelUnlocked(2);
         bool level3Unlocked = levelManager.IsLevelUnlocked(3);
+
+        Debug.Log($"UpdateLevelButtons çağrıldı - Level 2: {(level2Unlocked ? "Açık" : "Kilitli")}, Level 3: {(level3Unlocked ? "Açık" : "Kilitli")}");
 
         // Level 1
         if (level1Button != null)
@@ -355,6 +476,11 @@ public class MainMenuUI : MonoBehaviour
         if (level2LockIconkilit != null)
         {
             level2LockIconkilit.SetActive(!level2Unlocked); // Açıksa gizle, kilitliyse göster
+            Debug.Log($"Level 2 Lock Icon ({level2LockIconkilit.name}): {(level2Unlocked ? "GİZLENDİ" : "GÖSTERİLDİ")} - Aktif: {level2LockIconkilit.activeSelf}");
+        }
+        else
+        {
+            Debug.LogError("level2LockIconkilit referansı NULL! Unity Editor'da atanmamış olabilir.");
         }
 
         if (level2Text != null)
@@ -368,6 +494,11 @@ public class MainMenuUI : MonoBehaviour
         if (level3LockIconkilit != null)
         {
             level3LockIconkilit.SetActive(!level3Unlocked); // Açıksa gizle, kilitliyse göster
+            Debug.Log($"Level 3 Lock Icon ({level3LockIconkilit.name}): {(level3Unlocked ? "GİZLENDİ" : "GÖSTERİLDİ")} - Aktif: {level3LockIconkilit.activeSelf}");
+        }
+        else
+        {
+            Debug.LogError("level3LockIconkilit referansı NULL! Unity Editor'da atanmamış olabilir.");
         }
 
         if (level3Text != null)

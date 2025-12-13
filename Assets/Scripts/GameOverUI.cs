@@ -30,14 +30,25 @@ public class GameOverUI : MonoBehaviour
             gameOverPanel.SetActive(false);
         }
 
+        // Buton referanslarını kontrol et ve ayarla
         if (restartButton != null)
         {
             restartButton.onClick.AddListener(RestartGame);
+            Debug.Log("GameOverUI: Restart butonu listener eklendi.");
+        }
+        else
+        {
+            Debug.LogError("GameOverUI: restartButton referansı NULL! Unity Editor'da atanmamış!");
         }
 
         if (mainMenuButton != null)
         {
             mainMenuButton.onClick.AddListener(GoToMainMenu);
+            Debug.Log("GameOverUI: Main Menu butonu listener eklendi.");
+        }
+        else
+        {
+            Debug.LogError("GameOverUI: mainMenuButton referansı NULL! Unity Editor'da atanmamış!");
         }
 
         if (crashSystem == null)
@@ -151,6 +162,8 @@ public class GameOverUI : MonoBehaviour
 
     private void RestartGame()
     {
+        Debug.Log("RestartGame() çağrıldı!");
+        
         // Otomatik ana menüye dönme işlemini iptal et
         CancelInvoke(nameof(GoToMainMenu));
         
@@ -164,31 +177,37 @@ public class GameOverUI : MonoBehaviour
         if (FuelManager.Instance != null)
         {
             FuelManager.Instance.ResetFuel();
+            Debug.Log("FuelManager sıfırlandı.");
         }
         
         if (DistanceManager.Instance != null)
         {
             DistanceManager.Instance.ResetDistance();
+            Debug.Log("DistanceManager sıfırlandı.");
         }
         
         if (CoinManager.Instance != null)
         {
             CoinManager.Instance.ResetRunCoins();
+            Debug.Log("CoinManager sıfırlandı.");
         }
         
         // Game over panelini kapat
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(false);
+            Debug.Log("Game Over paneli kapatıldı.");
         }
         
         // GameManager ile restart yap
         if (GameManager.Instance != null)
         {
+            Debug.Log("GameManager.Instance bulundu, RestartLevel() çağrılıyor...");
             GameManager.Instance.RestartLevel();
         }
         else
         {
+            Debug.LogWarning("GameManager.Instance NULL! Fallback: Direkt sahne yeniden yükleniyor...");
             // Fallback: Direkt sahne yeniden yükle
             UnityEngine.SceneManagement.SceneManager.LoadScene(
                 UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
@@ -198,9 +217,21 @@ public class GameOverUI : MonoBehaviour
 
     private void GoToMainMenu()
     {
+        Debug.Log("GoToMainMenu() çağrıldı!");
+        
+        // Otomatik ana menüye dönme işlemini iptal et
+        CancelInvoke(nameof(GoToMainMenu));
+        
         if (GameManager.Instance != null)
         {
+            Debug.Log("GameManager.Instance bulundu, LoadMainMenu() çağrılıyor...");
             GameManager.Instance.LoadMainMenu();
+        }
+        else
+        {
+            Debug.LogWarning("GameManager.Instance NULL! Fallback: MainMenu sahnesi yükleniyor...");
+            // Fallback: Direkt MainMenu sahnesini yükle
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         }
     }
 }
