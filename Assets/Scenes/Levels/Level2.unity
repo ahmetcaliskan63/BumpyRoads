@@ -8538,8 +8538,6 @@ MonoBehaviour:
   distanceText: {fileID: 0}
   fuelBarContainer: {fileID: 370158837}
   crashSystem: {fileID: 880043779}
-  crashText: KAZA!
-  fuelEmptyText: "BENZ\u0130N B\u0130TT\u0130!"
   showDelay: 1
   autoReturnToMenuDelay: 5
   autoReturnToMenu: 1

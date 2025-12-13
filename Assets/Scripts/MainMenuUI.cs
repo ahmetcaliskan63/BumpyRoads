@@ -13,6 +13,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button playButton;
     [SerializeField] private Button levelSelectButton;
     [SerializeField] private Button quitButton;
+    [SerializeField] private Button resetProgressButton; // İlerlemeyi sıfırlama butonu
 
     [Header("Level Seçim Butonları")]
     [SerializeField] private Button level1Button;
@@ -24,26 +25,27 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI level1Text;
     [SerializeField] private TextMeshProUGUI level2Text;
     [SerializeField] private TextMeshProUGUI level3Text;
-    [SerializeField] private GameObject level1LockIcon;
-    [SerializeField] private GameObject level2LockIcon;
-    [SerializeField] private GameObject level3LockIcon;
+    [SerializeField] private GameObject level2LockIconkilit; // Level 2 kilit ikonu (LevelSelectPanel altında)
+    [SerializeField] private GameObject level3LockIconkilit; // Level 3 kilit ikonu (LevelSelectPanel altında)
     [SerializeField] private Sprite[] levelPreviewSprites; // UI görseli için
 
     [Header("Satın Alma Penceresi")]
     [SerializeField] private GameObject purchasePanel;
-    [SerializeField] private TextMeshProUGUI purchaseLevelNameText;
-    [SerializeField] private Image purchaseLevelImage;
-    [SerializeField] private TextMeshProUGUI purchasePriceText;
-    [SerializeField] private TextMeshProUGUI purchasePlayerCoinsText;
-    [SerializeField] private Button purchaseBuyButton;
-    [SerializeField] private Button purchaseBackButton;
+    [SerializeField] private GameObject purchaseCard; // Ortalanmış kart
+    [SerializeField] private TextMeshProUGUI purchaseLevelNameText; // Level adı (görselin üstünde)
+    [SerializeField] private Image purchaseLevelImage; // Level görseli (ortada)
+    [SerializeField] private Image purchaseCoinIcon; // Coin icon (üstte solda)
+    [SerializeField] private TextMeshProUGUI purchasePriceText; // Fiyat metni (coin icon yanında)
+    [SerializeField] private Button purchaseBuyButton; // Satın Al butonu (alta sağda)
+    [SerializeField] private Button purchaseBackButton; // Geri butonu (alta solda)
     [SerializeField] private Color buyButtonColor = new Color(0.2f, 0.8f, 0.2f);   // yeşil
     [SerializeField] private Color backButtonColor = new Color(0.8f, 0.2f, 0.2f);  // kırmızı
 
-    [Header("Seviye Fiyatları")]
+    [Header("Seviye Fiyatları ve Görselleri")]
     [SerializeField] private int level2Price = 50;
     [SerializeField] private int level3Price = 100;
-    [SerializeField] private string[] levelDisplayNames = { "Level 1", "Level 2", "Level 3" };
+    [SerializeField] private string[] levelDisplayNames = { "Level 1", "Level 2 Çöl", "Level 3 Yanar Dağ" };
+    [SerializeField] private Sprite[] levelFrameSprites; // Level çerçeve görselleri (level2Cerceve, level3Cercevesi)
 
     [Header("Oyun Başlığı")]
     [SerializeField] private TextMeshProUGUI gameTitleText;
@@ -86,6 +88,9 @@ public class MainMenuUI : MonoBehaviour
         if (quitButton != null)
             quitButton.onClick.AddListener(OnQuitButtonClicked);
 
+        if (resetProgressButton != null)
+            resetProgressButton.onClick.AddListener(ResetProgress);
+
         // Level seçim butonları
         if (level1Button != null)
             level1Button.onClick.AddListener(() => LoadLevel(1));
@@ -108,6 +113,8 @@ public class MainMenuUI : MonoBehaviour
         // Panel başlangıçta kapalı
         if (purchasePanel != null)
             purchasePanel.SetActive(false);
+        if (purchaseCard != null)
+            purchaseCard.SetActive(false);
 
         // Buton renklerini uygula (sahnede atandıysa override etmez)
         if (purchaseBuyButton != null && purchaseBuyButton.image != null)
@@ -116,9 +123,8 @@ public class MainMenuUI : MonoBehaviour
             purchaseBackButton.image.color = backButtonColor;
 
         // Kilit ikonları tıklamayı engellemesin
-        DisableLockIconRaycast(level1LockIcon);
-        DisableLockIconRaycast(level2LockIcon);
-        DisableLockIconRaycast(level3LockIcon);
+        DisableLockIconRaycast(level2LockIconkilit);
+        DisableLockIconRaycast(level3LockIconkilit);
 
         // Kasa bilgisini dinle
         if (CoinManager.Instance != null)
@@ -205,42 +211,67 @@ public class MainMenuUI : MonoBehaviour
     {
         pendingPurchaseLevel = levelNumber;
 
-        if (purchasePriceText != null)
+        // Kartı göster
+        if (purchaseCard != null)
         {
-            purchasePriceText.text = $"{price} Altın";
+            purchaseCard.SetActive(true);
         }
 
+        // Panel'i de aktif et (eğer varsa)
         if (purchasePanel != null)
         {
             purchasePanel.SetActive(true);
         }
 
-        // Level adı ve görseli
+        // Level adı (görselin üstünde)
         if (purchaseLevelNameText != null && levelNumber - 1 >= 0 && levelNumber - 1 < levelDisplayNames.Length)
         {
             purchaseLevelNameText.text = levelDisplayNames[levelNumber - 1];
         }
 
-        if (purchaseLevelImage != null && levelPreviewSprites != null &&
-            levelNumber - 1 >= 0 && levelNumber - 1 < levelPreviewSprites.Length)
+        // Level görseli (ortada) - levelFrameSprites kullan
+        if (purchaseLevelImage != null)
         {
-            purchaseLevelImage.sprite = levelPreviewSprites[levelNumber - 1];
-            purchaseLevelImage.preserveAspect = true;
+            // Level 2 için index 0, Level 3 için index 1
+            int spriteIndex = levelNumber - 2; // Level 2 -> 0, Level 3 -> 1
+            if (levelFrameSprites != null && spriteIndex >= 0 && spriteIndex < levelFrameSprites.Length)
+            {
+                purchaseLevelImage.sprite = levelFrameSprites[spriteIndex];
+                purchaseLevelImage.preserveAspect = true;
+            }
+            else if (levelPreviewSprites != null && levelNumber - 1 >= 0 && levelNumber - 1 < levelPreviewSprites.Length)
+            {
+                // Fallback: eski sistem
+                purchaseLevelImage.sprite = levelPreviewSprites[levelNumber - 1];
+                purchaseLevelImage.preserveAspect = true;
+            }
         }
 
-        // Oyuncu toplam coin bilgisi
-        if (CoinManager.Instance != null && purchasePlayerCoinsText != null)
+        // Fiyat metni (coin icon yanında)
+        if (purchasePriceText != null)
         {
-            purchasePlayerCoinsText.text = CoinManager.Instance.TotalCoins.ToString();
+            purchasePriceText.text = price.ToString();
+        }
+
+        // Coin icon'u göster (eğer atanmışsa)
+        if (purchaseCoinIcon != null)
+        {
+            purchaseCoinIcon.gameObject.SetActive(true);
         }
     }
 
     private void ClosePurchasePanel()
     {
         pendingPurchaseLevel = -1;
+        
+        // Tüm purchase UI elementlerini gizle
         if (purchasePanel != null)
         {
             purchasePanel.SetActive(false);
+        }
+        if (purchaseCard != null)
+        {
+            purchaseCard.SetActive(false);
         }
     }
 
@@ -282,10 +313,8 @@ public class MainMenuUI : MonoBehaviour
 
     private void UpdatePlayerCoinsUI(int totalCoins)
     {
-        if (purchasePlayerCoinsText != null)
-        {
-            purchasePlayerCoinsText.text = totalCoins.ToString();
-        }
+        // Bu metod artık kullanılmıyor ama event listener için gerekli
+        // Coin bilgisi artık purchase panel'de gösterilmiyor
     }
 
     private void LoadLevel(int levelNumber)
@@ -315,9 +344,6 @@ public class MainMenuUI : MonoBehaviour
         if (level1Button != null)
             level1Button.interactable = true; // Her zaman tıklanabilir
 
-        if (level1LockIcon != null)
-            level1LockIcon.SetActive(true); // Her zaman açık kalsın, kaybolmasın
-
         if (level1Text != null)
             level1Text.text = level1Unlocked ? "Level 1" : "Kilitli";
 
@@ -325,8 +351,11 @@ public class MainMenuUI : MonoBehaviour
         if (level2Button != null)
             level2Button.interactable = true; // Kilitliyken de tıklanıp satın alma açılsın
 
-        if (level2LockIcon != null)
-            level2LockIcon.SetActive(!level2Unlocked); // Satın alındıysa gizle
+        // Level 2 kilit ikonu (LevelSelectPanel altında direkt GameObject)
+        if (level2LockIconkilit != null)
+        {
+            level2LockIconkilit.SetActive(!level2Unlocked); // Açıksa gizle, kilitliyse göster
+        }
 
         if (level2Text != null)
             level2Text.text = level2Unlocked ? "Level 2" : "Kilitli";
@@ -335,8 +364,11 @@ public class MainMenuUI : MonoBehaviour
         if (level3Button != null)
             level3Button.interactable = true; // Kilitliyken de tıklanıp satın alma açılsın
 
-        if (level3LockIcon != null)
-            level3LockIcon.SetActive(!level3Unlocked); // Satın alındıysa gizle
+        // Level 3 kilit ikonu (LevelSelectPanel altında direkt GameObject)
+        if (level3LockIconkilit != null)
+        {
+            level3LockIconkilit.SetActive(!level3Unlocked); // Açıksa gizle, kilitliyse göster
+        }
 
         if (level3Text != null)
             level3Text.text = level3Unlocked ? "Level 3" : "Kilitli";
@@ -350,6 +382,26 @@ public class MainMenuUI : MonoBehaviour
         {
             img.raycastTarget = false; // ikon tıklamayı bloklamasın
         }
+    }
+
+    public void ResetProgress()
+    {
+        // Altınları sıfırla (kasa + run içi)
+        if (CoinManager.Instance != null)
+        {
+            CoinManager.Instance.ResetCoins();
+        }
+
+        // Level kilitlerini kapat (Level 1 açık kalır)
+        if (levelManager != null)
+        {
+            levelManager.ResetAllProgress();
+        }
+
+        // Satın alma paneli ve UI durumunu yenile
+        pendingPurchaseLevel = -1;
+        ClosePurchasePanel();
+        UpdateLevelButtons();
     }
 
     private void OnDestroy()
@@ -381,6 +433,9 @@ public class MainMenuUI : MonoBehaviour
 
         if (purchaseBackButton != null)
             purchaseBackButton.onClick.RemoveAllListeners();
+
+        if (resetProgressButton != null)
+            resetProgressButton.onClick.RemoveAllListeners();
     }
 }
 

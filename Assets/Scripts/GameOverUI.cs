@@ -17,8 +17,6 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private CrashSystem crashSystem;
 
     [Header("Ayarlar")]
-    [SerializeField] private string crashText = "KAZA!";
-    [SerializeField] private string fuelEmptyText = "BENZİN BİTTİ!";
     [SerializeField] private float showDelay = 1f;
     [SerializeField] private float autoReturnToMenuDelay = 5f; // Otomatik ana menüye dönme süresi (saniye)
     [SerializeField] private bool autoReturnToMenu = true; // Otomatik dönüş açık/kapalı
@@ -91,7 +89,7 @@ public class GameOverUI : MonoBehaviour
             GameManager.Instance.SetGameOver(true);
         }
 
-        ShowGameOver(crashText);
+        ShowGameOver();
     }
 
     private void OnFuelEmpty()
@@ -104,26 +102,26 @@ public class GameOverUI : MonoBehaviour
             GameManager.Instance.SetGameOver(true);
         }
 
-        ShowGameOver(fuelEmptyText);
+        ShowGameOver();
     }
 
-    private void ShowGameOver(string text)
+    private void ShowGameOver()
     {
         if (gameOverText != null)
         {
-            gameOverText.text = text;
+            gameOverText.text = "OYUN BİTTİ!";
         }
 
         if (coinsText != null)
         {
             int coins = CoinManager.Instance != null ? CoinManager.Instance.CurrentCoins : 0;
-            coinsText.text = "Altın: " + coins.ToString();
+            coinsText.text = coins.ToString(); // Sadece sayı (icon yanında)
         }
 
         if (distanceText != null)
         {
             float distance = DistanceManager.Instance != null ? DistanceManager.Instance.CurrentDistance : 0f;
-            distanceText.text = "Mesafe: " + distance.ToString("F1") + " m";
+            distanceText.text = $"{distance:F1} m"; // Sadece sayı ve birim (icon yanında)
         }
 
         if (gameOverPanel != null)
@@ -156,12 +154,45 @@ public class GameOverUI : MonoBehaviour
         // Otomatik ana menüye dönme işlemini iptal et
         CancelInvoke(nameof(GoToMainMenu));
         
+        // Tüm Invoke'ları iptal et
+        CancelInvoke();
+        
         // Game over durumunu sıfırla
         isGameOver = false;
         
+        // Sistemleri sıfırla
+        if (FuelManager.Instance != null)
+        {
+            FuelManager.Instance.ResetFuel();
+        }
+        
+        if (DistanceManager.Instance != null)
+        {
+            DistanceManager.Instance.ResetDistance();
+        }
+        
+        if (CoinManager.Instance != null)
+        {
+            CoinManager.Instance.ResetRunCoins();
+        }
+        
+        // Game over panelini kapat
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
+        
+        // GameManager ile restart yap
         if (GameManager.Instance != null)
         {
             GameManager.Instance.RestartLevel();
+        }
+        else
+        {
+            // Fallback: Direkt sahne yeniden yükle
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
+            );
         }
     }
 
