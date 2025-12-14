@@ -339,7 +339,7 @@ Transform:
   m_GameObject: {fileID: 143992787}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.98942, y: 2.6200001, z: -10}
+  m_LocalPosition: {x: -13.928324, y: 2.6200001, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -993,7 +993,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.18431373, g: 0.8235294, b: 0.83137256, a: 0}
+  m_BackGroundColor: {r: 0.7372549, g: 0.64705884, b: 0.52156866, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1043,7 +1043,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.98942, y: 2.6200001, z: -10}
+  m_LocalPosition: {x: -13.928324, y: 2.6200001, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2406,7 +2406,7 @@ MonoBehaviour:
       spriteIndex: 0
       corner: 0
       m_CornerMode: 1
-  m_SpriteShape: {fileID: 11400000, guid: 3ff6ce82c46c5284d93a4d848e96a4c4, type: 2}
+  m_SpriteShape: {fileID: 11400000, guid: 3deb2f5cfeb407e49b4b7f5ad87b5d51, type: 2}
   m_FillPixelPerUnit: 100
   m_StretchTiling: 1
   m_SplineDetail: 16
@@ -2428,11 +2428,12 @@ MonoBehaviour:
   m_Creator: {fileID: 0}
   m_Modifiers: []
   m_ColliderSegment:
-  - {x: -1.99968, y: -2}
-  - {x: -2, y: 1.99968}
-  - {x: 1.99968, y: 2}
+  - {x: -1.99809, y: -2}
+  - {x: -1.99809, y: 1.75}
+  - {x: -1.9995, y: 1.9995}
+  - {x: 2, y: 1.99809}
   - {x: 2, y: -2}
-  - {x: -1.99968, y: -2}
+  - {x: -1.99809, y: -2}
   m_ShadowSegment: []
 --- !u!1971053207 &1397357166
 SpriteShapeRenderer:
@@ -2484,14 +2485,20 @@ SpriteShapeRenderer:
   m_SortingOrder: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_MaskInteraction: 0
-  m_ShapeTexture: {fileID: 2800000, guid: a385277ebc2154e46aee27fac8f9f595, type: 3}
+  m_ShapeTexture: {fileID: 2800000, guid: 1291dce92d95b0a47b854912adecd7ee, type: 3}
   m_Sprites:
-  - {fileID: 21300000, guid: 2b996da923aaaf94b9ff2168779df7bb, type: 3}
-  - {fileID: 21300000, guid: 2b996da923aaaf94b9ff2168779df7bb, type: 3}
-  - {fileID: 21300000, guid: 2b996da923aaaf94b9ff2168779df7bb, type: 3}
+  - {fileID: -7244625552833499843, guid: 78865236f50cdf54788629371937669c, type: 3}
+  - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
+  - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
+  - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
+  - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
+  - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
+  - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
+  - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
+  - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
   m_LocalAABB:
-    m_Center: {x: 0, y: 0.08000016, z: 0}
-    m_Extent: {x: 2.1600003, y: 2.0800004, z: 0}
+    m_Center: {x: -0.31200004, y: 0.31200004, z: 0}
+    m_Extent: {x: 2.6430001, y: 2.6430001, z: 0}
   m_SpriteSortPoint: 0
 --- !u!4 &1397357167
 Transform:
@@ -2502,7 +2509,7 @@ Transform:
   m_GameObject: {fileID: 1397357163}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.96, y: -1.1, z: 0}
+  m_LocalPosition: {x: -14.92, y: -1.93, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2545,11 +2552,12 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -1.99968, y: -2}
-  - {x: -2, y: 1.99968}
-  - {x: 1.99968, y: 2}
+  - {x: -1.99809, y: -2}
+  - {x: -1.99809, y: 1.75}
+  - {x: -1.9995, y: 1.9995}
+  - {x: 2, y: 1.99809}
   - {x: 2, y: -2}
-  - {x: -1.99968, y: -2}
+  - {x: -1.99809, y: -2}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
