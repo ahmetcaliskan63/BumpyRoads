@@ -34,6 +34,12 @@ public class CarController : MonoBehaviour
         {
             Debug.LogError("CarController: Rigidbody2D referansları atanmamış! Inspector'dan atayın.");
         }
+
+        // Motor sesini başlat (eğer AudioManager varsa)
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StartEngineSound();
+        }
     }
 
     private void Update()
@@ -59,6 +65,12 @@ public class CarController : MonoBehaviour
         }
 
         smoothedInput = Mathf.Lerp(smoothedInput, rawInput, inputSmoothing * Time.deltaTime);
+
+        // Motor sesinin pitch'ini güncelle (gaz verildiğinde ses değişsin)
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.UpdateEnginePitch(smoothedInput);
+        }
     }
 
     private void FixedUpdate()

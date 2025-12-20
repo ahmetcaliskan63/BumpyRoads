@@ -33,6 +33,12 @@ public class CoinCollectible : MonoBehaviour
 
         isCollected = true;
 
+        // Altın toplama sesini çal
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayCoinCollectSound();
+        }
+
         if (CoinManager.Instance != null)
         {
             CoinManager.Instance.CollectCoin();

@@ -23,6 +23,12 @@ public class FuelCollectible : MonoBehaviour
 
         isCollected = true;
 
+        // Benzin bidonu toplama sesini çal
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayFuelCollectSound();
+        }
+
         if (FuelManager.Instance != null)
         {
             FuelManager.Instance.CollectFuel();

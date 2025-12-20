@@ -13,7 +13,6 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button playButton;
     [SerializeField] private Button levelSelectButton;
     [SerializeField] private Button quitButton;
-    [SerializeField] private Button resetProgressButton; // İlerlemeyi sıfırlama butonu
 
     [Header("Level Seçim Butonları")]
     [SerializeField] private Button level1Button;
@@ -50,11 +49,17 @@ public class MainMenuUI : MonoBehaviour
     [Header("Oyun Başlığı")]
     [SerializeField] private TextMeshProUGUI gameTitleText;
 
+    [Header("Hazırlayanlar Metni")]
+    [SerializeField] private TextMeshProUGUI creditsText; // Alt köşede gösterilecek hazırlayanlar metni
+
     private LevelManager levelManager;
     private int pendingPurchaseLevel = -1;
 
     private void Start()
     {
+        // AudioManager'ı kontrol et ve müziği başlat
+        InitializeAudioManager();
+
         // LevelManager'ı bul veya oluştur
         levelManager = LevelManager.Instance != null ? LevelManager.Instance : FindObjectOfType<LevelManager>();
         if (levelManager == null)
@@ -158,6 +163,34 @@ public class MainMenuUI : MonoBehaviour
 
         // Level durumlarını güncelle
         UpdateLevelButtons();
+
+        // Hazırlayanlar metnini ayarla
+        SetupCreditsText();
+    }
+
+    /// <summary>
+    /// AudioManager'ı başlatır ve ana menü müziğini çalar
+    /// </summary>
+    private void InitializeAudioManager()
+    {
+        // AudioManager'ı bul veya oluştur
+        if (AudioManager.Instance == null)
+        {
+            GameObject audioManagerObj = new GameObject("AudioManager");
+            audioManagerObj.AddComponent<AudioManager>();
+            Debug.Log("AudioManager oluşturuldu.");
+        }
+
+        // Ana menü müziğini başlat
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMenuMusic();
+            Debug.Log("Ana menü müziği başlatıldı.");
+        }
+        else
+        {
+            Debug.LogWarning("AudioManager bulunamadı veya oluşturulamadı!");
+        }
     }
 
     // LevelSelectPanel altında child GameObject bul
@@ -186,9 +219,6 @@ public class MainMenuUI : MonoBehaviour
 
         if (quitButton != null)
             quitButton.onClick.AddListener(OnQuitButtonClicked);
-
-        if (resetProgressButton != null)
-            resetProgressButton.onClick.AddListener(ResetProgress);
 
         // Level seçim butonları
         if (level1Button != null)
@@ -515,24 +545,19 @@ public class MainMenuUI : MonoBehaviour
         }
     }
 
-    public void ResetProgress()
+    /// <summary>
+    /// Hazırlayanlar metnini ayarlar (alt köşede gösterilir)
+    /// </summary>
+    private void SetupCreditsText()
     {
-        // Altınları sıfırla (kasa + run içi)
-        if (CoinManager.Instance != null)
+        if (creditsText != null)
         {
-            CoinManager.Instance.ResetCoins();
+            creditsText.text = "Hazırlayanlar: Enes Yenigün (1220505062), Ahmet Çalışkan (1220505025)";
         }
-
-        // Level kilitlerini kapat (Level 1 açık kalır)
-        if (levelManager != null)
+        else
         {
-            levelManager.ResetAllProgress();
+            Debug.LogWarning("MainMenuUI: creditsText atanmamış! Unity Editor'da alt köşeye bir TextMeshProUGUI ekleyip Inspector'dan atayın.");
         }
-
-        // Satın alma paneli ve UI durumunu yenile
-        pendingPurchaseLevel = -1;
-        ClosePurchasePanel();
-        UpdateLevelButtons();
     }
 
     private void OnDestroy()
@@ -564,9 +589,6 @@ public class MainMenuUI : MonoBehaviour
 
         if (purchaseBackButton != null)
             purchaseBackButton.onClick.RemoveAllListeners();
-
-        if (resetProgressButton != null)
-            resetProgressButton.onClick.RemoveAllListeners();
     }
 }
 
